@@ -15,14 +15,26 @@ ENTRY = (
 
 
 def validate(text):
-    """Assert the competition gate: 1-200 chars, single sentence, non-empty."""
+    """Assert the competition gate: 1-200 chars, single sentence, non-empty.
+
+    Exactly one sentence means: one trailing period, no other sentence
+    terminators ('!', '?'), no embedded period followed by a space, and no
+    leading or trailing whitespace.
+    """
     assert isinstance(text, str), "entry must be text"
     assert text.strip(), "entry must not be empty or only whitespace"
+    assert text == text.strip(), "entry must not have leading/trailing whitespace"
     assert 1 <= len(text) <= 200, (
         f"entry must be 1-200 characters, got {len(text)}"
     )
+    assert "!" not in text and "?" not in text, (
+        "entry must not contain '!' or '?'"
+    )
     assert text.count(".") == 1 and text.endswith("."), (
         "entry must be exactly one sentence"
+    )
+    assert ". " not in text, (
+        "entry must not contain an embedded sentence-ending period"
     )
     return True
 
